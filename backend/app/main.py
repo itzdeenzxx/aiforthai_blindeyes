@@ -67,13 +67,14 @@ def translate_text_google_api_key(text, target_language='en'):
         raise HTTPException(status_code=500, detail=f"Invalid translation response format: {str(e)}")
 
 def process_image_with_aiforthai(image_bytes, question):
+    char = " This is a question, and I want you to be a very polite and close female friend. Please respond kindly and ask them back with good intentions, inviting them to chat."
     try:
         # Create a temporary file to store the image
         with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as temp_file:
             temp_file.write(image_bytes)
             temp_file_path = temp_file.name
-
         try:
+            question_with_char = question + char
             # Use AI for Thai VQA
             result = vqa.generate(temp_file_path, question)
             return result.get('content', 'No response from AI')
