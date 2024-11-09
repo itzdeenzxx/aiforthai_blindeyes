@@ -66,6 +66,28 @@ def translate_text_google_api_key(text, target_language='en'):
     except KeyError as e:
         raise HTTPException(status_code=500, detail=f"Invalid translation response format: {str(e)}")
 
+def translate_text_google_api_key_th(text, target_language='th'):
+    try:
+        url = "https://translation.googleapis.com/language/translate/v2"
+        params = {
+            'q': text,
+            'target': target_language,
+            'source': 'th',
+            'key': google_api_key
+        }
+        response = requests.post(url, params=params)
+        if not response.ok:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=f"Translation API error: {response.text}"
+            )
+        result = response.json()
+        return result['data']['translations'][0]['translatedText']
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Translation request error: {str(e)}")
+    except KeyError as e:
+        raise HTTPException(status_code=500, detail=f"Invalid translation response format: {str(e)}")
+
 def process_image_with_aiforthai(image_bytes, question):
     char = " This is a question, and I want you to be a very polite and close female friend. Please respond kindly and ask them back with good intentions, inviting them to chat."
     try:
@@ -88,22 +110,17 @@ def process_image_with_aiforthai(image_bytes, question):
 @app.post('/process')
 async def process_data(audio: UploadFile = File(...), image: UploadFile = File(...)):
     try:
-        # Read image content
         image_content = await image.read()
         
-        # Process audio
         audio_content = await audio.read()
         audio_file = io.BytesIO(audio_content)
         
-        # Get transcript
         transcript = speech_to_text_google_api_key(audio_file, google_api_key)
         print(f"Transcript: {transcript}")
         
-        # Process with AI for Thai
         ai_response = process_image_with_aiforthai(image_content, transcript)
         print(f"AI response: {ai_response}")
         
-        # Translate the AI response to English (optional)
         translated_response = translate_text_google_api_key(ai_response)
         print(f"Translated response: {translated_response}")
         
