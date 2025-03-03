@@ -41,11 +41,16 @@ AI for Thai - Blind Eyes is a web application designed to assist visually impair
    ```
 
 ## 📸 Screenshots
-
+![screenshot](screenshot/blind-project.png)
 
 ## 📝 License
 This project is licensed under the [LICENSE](https://github.com/itzdeenzxx)
 
 ## 📩 Contact
 For questions or suggestions, feel free to reach out via [GitHub Issues](https://github.com/itzdeenzxx/aiforthai_blindeyes/issues) or email the developer.
+
+
+
+
+
 
